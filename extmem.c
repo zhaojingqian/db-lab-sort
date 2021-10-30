@@ -17,7 +17,7 @@ Buffer *initBuffer(size_t bufSize, size_t blkSize, Buffer *buf)
     buf->numIO = 0;
     buf->bufSize = bufSize;
     buf->blkSize = blkSize;
-    buf->numAllBlk = bufSize / (blkSize + 1);
+    buf->numAllBlk = bufSize / (blkSize + 1);   //this is 8
     buf->numFreeBlk = buf->numAllBlk;
     buf->data = (unsigned char*)malloc(bufSize * sizeof(unsigned char));
 
@@ -84,6 +84,7 @@ int dropBlockOnDisk(unsigned int addr)
 
 unsigned char *readBlockFromDisk(unsigned int addr, Buffer *buf)
 {
+
     char filename[40];
     unsigned char *blkPtr, *bytePtr;
     char ch;
@@ -127,6 +128,7 @@ unsigned char *readBlockFromDisk(unsigned int addr, Buffer *buf)
     fclose(fp);
     buf->numFreeBlk--;
     buf->numIO++;
+    // printf("\n%d\n", buf->numFreeBlk);
     return blkPtr;
 }
 

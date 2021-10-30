@@ -23,7 +23,7 @@ int main(int argc, char **argv)
         *(blk + i) = (char)('1' + i);
 
     /* Write the block to the hard disk */
-    if (writeBlockToDisk(blk, 8888, &buf) != 0)
+    if (writeBlockToDisk(blk, 100, &buf) != 0)
     {
         perror("Writing Block Failed!\n");
         return -1;

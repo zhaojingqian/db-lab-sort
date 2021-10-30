@@ -4,6 +4,7 @@
  * Harbin Institute of Technology
  * Jun 22, 2011
  */
+#include <stddef.h>
 
 #ifndef EXTMEM_H
 #define EXTMEM_H
