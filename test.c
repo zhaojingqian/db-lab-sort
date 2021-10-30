@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 
     char str[5];
     printf("block 1:\n");
-    for (i = 0; i < 7; i++) //Ò»¸öblk´æ7¸öÔª×é¼ÓÒ»¸öµØÖ·
+    for (i = 0; i < 7; i++) //Ò»ï¿½ï¿½blkï¿½ï¿½7ï¿½ï¿½Ôªï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ö·
     {
 
         for (int k = 0; k < 4; k++)
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 
 
     printf("\n");
-    printf("IO's is %d\n", buf.numIO); /* Check the number of IO's */
+    printf("IO's is %ld\n", buf.numIO); /* Check the number of IO's */
 
     return 0;
 }

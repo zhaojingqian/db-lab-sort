@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "extmem.h"
+#include <string.h>
 
 Buffer *initBuffer(size_t bufSize, size_t blkSize, Buffer *buf)
 {
