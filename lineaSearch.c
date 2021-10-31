@@ -56,11 +56,11 @@ void itostr(int num, char str[5]) {
     str[4] = '\0';
 }
 
-void WriteBlockData(int x, int y, Buffer *buf) {
-    char str1[5];
-    char str2[5];
-    itostr(x, str1);
-    itostr(y, str2);
+void WriteBlockData(char str1[5], char str2[5], Buffer *buf) {
+    // char str1[5];
+    // char str2[5];
+    // itostr(x, str1);
+    // itostr(y, str2);
 
     //whether write into disk
     if(wblk > buf->data+buf->bufSize) {
@@ -91,30 +91,33 @@ void WriteBlockData(int x, int y, Buffer *buf) {
 
     //jump nextdiskindex
     if((wblk-wblkbase)%65 == 57) {
-        itostr(numblk+(wblk-wblkbase)/65+1, str1);
+        char strnextdisk[5];
+        itostr(numblk+(wblk-wblkbase)/65+1, strnextdisk);
         printf("nextdisk=%ld\n", numblk+(wblk-wblkbase)/65+1);
         for(int k=0; k<4; k++) 
-            *(wblk + k) = str1[k];
+            *(wblk + k) = strnextdisk[k];
         wblk += 8;
     }
     // printf("--wblk=%p\n", wblk);
 }
 
-void ReadBlockData(unsigned char *blk, int *x, int *y) {
-    char str[5];
+void ReadBlockData(unsigned char *blk) {
+    char str1[5];
+    char str2[5];
+    int x, y;
     for(int i=0; i<7; i++) {
-        for(int k=0; k<4; k++) 
-            str[k] = *(blk + i*8 + k);
-        *x = atoi(str);
-        for(int k=0; k<4; k++) 
-            str[k] = *(blk + i*8 + k + 4);
-        *y = atoi(str);
+        for(int k=0; k<4; k++) {
+            str1[k] = *(blk + i*8 + k);
+            str2[k] = *(blk + i*8 + k + 4);
+        }
+        x = atoi(str1);
+        y = atoi(str2);
 
-        if(*x == 130) {
-            printf("x=%d, y=%d\n", *x, *y);
+        if(x == 130) {
+            printf("x=%d, y=%d\n", x, y);
             // write into block
             // printf("wblk=%p\n", wblk);
-            WriteBlockData(*x, *y, buf);
+            WriteBlockData(str1, str2, buf);
         }
     }
 }
@@ -140,7 +143,7 @@ int main() {
         while(blkPtr < buf->data + (buf->blkSize+1) * (buf->numAllBlk-4)) {
             //process
             int x, y;
-            ReadBlockData(blkPtr+1, &x, &y);
+            ReadBlockData(blkPtr+1);
             blkPtr += buf->blkSize + 1;
         }
 
