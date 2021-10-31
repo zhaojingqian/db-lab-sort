@@ -137,7 +137,7 @@ int writeBlockToDisk(unsigned char *blkPtr, unsigned int addr, Buffer *buf)
     char filename[40];
     unsigned char *bytePtr;
 
-    sprintf(filename, "data/%d.blk", addr);
+    sprintf(filename, "datatest/%d.blk", addr);
     FILE *fp = fopen(filename, "w");
 
     if (!fp)

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "extmem.h"
 
 //* linea search
@@ -68,6 +69,7 @@ void WriteBlockData(char str1[5], char str2[5], Buffer *buf) {
         for(int i=NUM; i<8; i++) {
             unsigned char *blkPtr = GetBlockdataAddress(i, buf);
             writeBlockToDisk(blkPtr, numblk++, buf);
+            memset(blkPtr, '\0', sizeof(char)*buf->blkSize);
         }
         //restart
         wblk = GetBlockdataAddress(NUM, buf);
@@ -155,7 +157,7 @@ int main() {
 
     for(int i=NUM; i<8; i++) {
         unsigned char *blkPtr = GetBlockdataAddress(i, buf);
-        if(*(blkPtr+1)) 
+        if(*(blkPtr)) 
             writeBlockToDisk(blkPtr, ++numblk, buf);
         else 
             break;
