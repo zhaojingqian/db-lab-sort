@@ -408,10 +408,10 @@ int main() {
     while(blkPtr1 || blkPtr2|| blkPtr3 || blkPtr4) {
 
         if((blkPtr1-buf->data)%65==57) {
-            printf("way-1 change!\n");
+            // printf("way-1 change!\n");
             freeBlockInBuffer(GetBlockdataAddress(0, buf), buf);
             if(mergeblock1 == 224) {
-                printf("way-1 over!\n");               
+                // printf("way-1 over!\n");               
                 blkPtr1 = NULL;
                 mergeblock1 = 225;
             } else {
@@ -420,10 +420,10 @@ int main() {
         }
 
         if((blkPtr2-buf->data)%65==57) {
-            printf("way-2 change!\n");
+            // printf("way-2 change!\n");
             freeBlockInBuffer(GetBlockdataAddress(1, buf), buf);
             if(mergeblock2 == 232) {
-                printf("way-2 over!\n");               
+                // printf("way-2 over!\n");               
                 blkPtr2 = NULL;
                 mergeblock2 = 233;
             } else {
@@ -432,10 +432,10 @@ int main() {
         }
                 
         if((blkPtr3-buf->data)%65==57) {
-            printf("way-3 change!\n");
+            // printf("way-3 change!\n");
             freeBlockInBuffer(GetBlockdataAddress(2, buf), buf);
             if(mergeblock3 == 240) {
-                printf("way-3 over!\n");               
+                // printf("way-3 over!\n");               
                 blkPtr3 = NULL;
                 mergeblock3 = 241;
             } else {
@@ -444,10 +444,10 @@ int main() {
         }
                 
         if((blkPtr4-buf->data)%65==57) {
-            printf("way-4 change!\n");
+            // printf("way-4 change!\n");
             freeBlockInBuffer(GetBlockdataAddress(3, buf), buf);
             if(mergeblock4 == 248) {
-                printf("way-4 over!\n");               
+                // printf("way-4 over!\n");               
                 blkPtr4 = NULL;
                 mergeblock4 = 249;
             } else {
@@ -479,7 +479,7 @@ int main() {
         }
         if(wblk > buf->data+buf->bufSize) {
             //! write into disk
-            printf("write into disk!\n");
+            // printf("write into disk!\n");
             for(int i=4; i<8; i++) {
                 unsigned char *cblk = GetBlockdataAddress(i, buf);
                 writeBlockToDisk(cblk, ++fnumblk, buf);
@@ -499,6 +499,7 @@ int main() {
             break;
     }
 
+    printf("sort over, IO=%ld, store in disk301-%d\n", buf->numIO, fnumblk);
     return 0;
 }
 

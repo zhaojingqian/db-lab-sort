@@ -152,6 +152,7 @@ int main() {
         for(int j=0; j<4; j++) {
             blk = GetBlockdataAddress(j, buf);
             freeBlockInBuffer(blk, buf);
+            memset(blk, '\0', sizeof(char)*buf->blkSize);
         }
     }
 
@@ -162,7 +163,7 @@ int main() {
         else 
             break;
     }
-    printf("search over, IO=%ld, store in disk%d\n", buf->numIO, numblk);
+    printf("search over, IO=%ld, store in disk101-%d\n", buf->numIO, numblk);
     return 0;
 
 }
