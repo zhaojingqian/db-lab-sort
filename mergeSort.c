@@ -43,16 +43,6 @@ unsigned char *GetBlockdataAddress(int num, Buffer *buf) {
     return buf->data + (buf->blkSize+1)*num + 1;
 }
 
-void ReadBlockData(unsigned char *blk, char str1[5], char str2[5]) {
-    int x, y;
-    for(int i=0; i<7; i++) {
-        for(int k=0; k<4; k++) {
-            str1[k] = *(blk + i*8 + k);
-            str2[k] = *(blk + i*8 + k + 4);
-        }
-    }
-}
-
 void itostr(int num, char str[5]) {
     int i = 4;
     while(num) {
@@ -84,16 +74,17 @@ unsigned char *FindMinPtr2(unsigned char *ptr1, unsigned char *ptr2) {
         return ptr2;
     }
 }
+
 unsigned char *FindMinPtr4(unsigned char*ptr1, unsigned char*ptr2, unsigned char*ptr3, unsigned char*ptr4) {
     //! we don't know whether ptr is null or not
     // for 1 and 2
     unsigned char *blkptr1 = FindMinPtr2(ptr1, ptr2);
     //for 3 and 4
     unsigned char *blkptr2 = FindMinPtr2(ptr3, ptr4);
-
     //finally
-    return FindMinPtr2(blkptr1, blkptr2);
-    
+    unsigned char *blkfin =  FindMinPtr2(blkptr1, blkptr2);
+
+    return blkfin;
 }
 
 int main() {
@@ -222,51 +213,7 @@ int main() {
                 blkPtr2 = readBlockFromDisk(++mergeblock2, buf);
             }
         }
-        
-        // if(!blkPtr1 && !blkPtr2) 
-        //     break;
 
-        // else if(!blkPtr1) {
-        //     for(int k=0; k<4; k++) {
-        //         *(wblk + k) = *(blkPtr2 + k);
-        //         *(wblk + k+ 4) = *(blkPtr2 + k + 4);
-        //     }
-        //     wblk += 8;
-        //     blkPtr2 += 8;
-        // } else if(!blkPtr2) {
-        //     for(int k=0; k<4; k++) {
-        //         *(wblk + k) = *(blkPtr1 + k);
-        //         *(wblk + k+ 4) = *(blkPtr1 + k + 4);
-        //     }
-        //     wblk += 8;
-        //     blkPtr1 += 8;
-        // } else {
-        //     char str11[5], str12[5], str21[5], str22[5];
-        //     for(int k=0; k<4; k++) {
-        //         str11[k] = *(blkPtr1 + k);
-        //         str12[k] = *(blkPtr1 + k + 4);
-        //         str21[k] = *(blkPtr2 + k);
-        //         str22[k] = *(blkPtr2 + k + 4);
-        //     }
-        //     // printf("%s, %s\n", str11, str21);
-        //     if((strcmp(str11, str21)<0) || (strcmp(str11, str21)==0 && strcmp(str12, str22)<0)) {
-        //         // printf("---%s, %s---\n", str21, str22);
-        //         for(int k=0; k<4; k++) {
-        //             *(wblk + k) = *(blkPtr1 + k);
-        //             *(wblk + k+ 4) = *(blkPtr1 + k + 4);
-        //         }
-        //         wblk += 8;
-        //         blkPtr1 += 8;
-        //     } else {
-        //         // printf("---%s, %s---\n", str21, str22);
-        //         for(int k=0; k<4; k++) {
-        //             *(wblk + k) = *(blkPtr2 + k);
-        //             *(wblk + k+ 4) = *(blkPtr2 + k + 4);
-        //         }
-        //         wblk += 8;
-        //         blkPtr2 += 8;     
-        //     }
-        // }
         unsigned char *minPtr = FindMinPtr2(blkPtr1, blkPtr2);
         if(!minPtr) break;
         else {
@@ -402,10 +349,10 @@ int main() {
     //put first 4 blocks into buffer
     blkPtr1 = readBlockFromDisk(++mergeblock1, buf);
     blkPtr2 = readBlockFromDisk(++mergeblock2, buf);
-    unsigned char *blkPtr3 = readBlockFromDisk(++mergeblock2, buf);
-    unsigned char *blkPtr4 = readBlockFromDisk(++mergeblock2, buf);
+    unsigned char *blkPtr3 = readBlockFromDisk(++mergeblock3, buf);
+    unsigned char *blkPtr4 = readBlockFromDisk(++mergeblock4, buf);
 
-    while(blkPtr1 || blkPtr2|| blkPtr3 || blkPtr4) {
+    while(blkPtr1 || blkPtr2 || blkPtr3 || blkPtr4) {
 
         if((blkPtr1-buf->data)%65==57) {
             // printf("way-1 change!\n");
@@ -416,6 +363,7 @@ int main() {
                 mergeblock1 = 225;
             } else {
                 blkPtr1 = readBlockFromDisk(++mergeblock1, buf);
+                
             }
         }
 
@@ -454,19 +402,28 @@ int main() {
                 blkPtr4 = readBlockFromDisk(++mergeblock4, buf);
             }
         }
-    
         unsigned char *minPtr = FindMinPtr4(blkPtr1, blkPtr2, blkPtr3, blkPtr4);
         if(!minPtr) break;
         else {
+
             for(int k=0; k<4; k++) {
                 *(wblk + k) = *(minPtr + k);
                 *(wblk + k + 4) = *(minPtr + k + 4);
             }
             wblk += 8;
-            if(minPtr==blkPtr1)      blkPtr1 += 8;
-            else if(minPtr==blkPtr2) blkPtr2 += 8;
-            else if(minPtr==blkPtr3) blkPtr3 += 8;
-            else                     blkPtr4 += 8;
+            if(minPtr==blkPtr1)      {
+                blkPtr1 += 8;
+            }
+            else if(minPtr==blkPtr2) {
+                blkPtr2 += 8;
+            }
+            else if(minPtr==blkPtr3) {
+                blkPtr3 += 8;
+            }
+            
+            else   {
+                blkPtr4 += 8;
+            }                  
         }
         if((wblk-wblkbase)%65 == 57) {
             char strnextdisk[5];
