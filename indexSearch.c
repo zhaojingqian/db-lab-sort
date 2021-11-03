@@ -212,9 +212,3 @@ int main() {
     printf("search over, IO=%ld, store in disk351-%d\n", buf->numIO-begin_io, numblk);
     return 0;
 }
-
-
-
-
-
-

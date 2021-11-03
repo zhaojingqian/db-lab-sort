@@ -69,46 +69,22 @@ int main() {
     
     //build an index table(100, 110, 120, 130)
 
-    struct table t[4];
-    t[0].data = 100;
-    t[1].data = 110;
-    t[2].data = 120;
-    t[3].data = 130;
-    int indexNum = 0;
-
-    for(int n=0; n<4; n++) {
-        for(int i=0; i<8; i++) {
-            int addr = n*8 + i + 316 + 1;
-            printf("addr=%d\n", addr);
-            unsigned char *blkPtr = ReadBlockFromDisk(addr, buf);
-            for(unsigned char *blk=blkPtr; blk<blkPtr+buf->blkSize-8; blk+=8) {
-                // printf("-local=%d\n", blk-blkPtr);
-                char str1[5];
-                char str2[5];
-                for(int k=0; k<4; k++) {
-                    str1[k] = *(blk + k);
-                    str2[k] = *(blk + k + 4);
-                }
-                printf("-str1=%s, str2=%s\n",str1, str2);
-                int x = atoi(str1);
-                if(x >= t[indexNum].data) {
-                    // printf("--x=%d\n", x);
-                    t[indexNum++].indexBlock = addr;
-                    // ++indexNum;
-                }
-                if(indexNum == 4) {
-                    freeBlockInBuffer(blkPtr, buf);
-                    break;
-                }
+    for(int i=0; i<47; i++) {
+        int addr = i + 700 + 1;
+        printf("addr=%d\n", addr);
+        unsigned char *blkPtr = ReadBlockFromDisk(addr, buf);
+        for(unsigned char *blk=blkPtr; blk<blkPtr+buf->blkSize-8; blk+=8) {
+            // printf("-local=%d\n", blk-blkPtr);
+            char str1[5];
+            char str2[5];
+            for(int k=0; k<4; k++) {
+                str1[k] = *(blk + k);
+                str2[k] = *(blk + k + 4);
             }
-            freeBlockInBuffer(blkPtr, buf);
-            if(indexNum == 4) break;
+            printf("(%s, %s)\n",str1, str2);   
         }
+        freeBlockInBuffer(blkPtr, buf);
     }
-    for(int i=0; i<4; i++) {
-        // printf("t[%d].indexBlock=%d\n", i, t[i].indexBlock);
-    }
-    
     return 0;
 }
 
