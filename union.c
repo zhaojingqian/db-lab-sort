@@ -100,10 +100,10 @@ int main() {
 
     while(blkPtr1 || blkPtr2) {
         if((blkPtr1-buf->data)%65==57) {
-            printf("way-1 change!\n");
+            // printf("way-1 change!\n");
             freeBlockInBuffer(GetBlockdataAddress(0, buf), buf);
             if(mergeblock1 == 316) {
-                printf("way-1 over!\n");               
+                // printf("way-1 over!\n");               
                 blkPtr1 = NULL;
                 mergeblock1 = 317;
             } else {
@@ -111,10 +111,10 @@ int main() {
             }
         }
         if((blkPtr2-buf->data)%65==57) {
-            printf("way-2 change!\n");
+            // printf("way-2 change!\n");
             freeBlockInBuffer(GetBlockdataAddress(1, buf), buf);
             if(mergeblock2 == 348) {
-                printf("way-2 over!\n");           
+                // printf("way-2 over!\n");           
                 blkPtr2 = NULL;
                 mergeblock2 = 349;
             } else {
@@ -125,17 +125,6 @@ int main() {
         unsigned char *minPtr = FindSamePtr2(blkPtr1, blkPtr2);
         if(!minPtr) break;
         else {
-            
-            // if(strcmp(minPtr, '0000')) {
-            //     printf("the same!\n");
-            //     for(int k=0; k<4; k++) {
-            //         // which one is all ok
-            //         *(wblk + k) = *(blkPtr1 + k);
-            //         *(wblk + k + 4) = *(blkPtr1 + k + 4);
-            //     }
-            //     blkPtr1 += 8;
-            //     blkPtr2 += 8;
-            // }
             ++count;
             for(int k=0; k<4; k++) {
                 *(wblk + k) = *(minPtr + k);

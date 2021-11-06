@@ -7,7 +7,7 @@
 //* R:1.blk-16.blk
 //* S:17.blk-48.blk
 //* fetch from disk to memory and match
-//* use 6 blocks to pick up, 2 blocks to store match data
+//* use 4 blocks to pick up, 4 blocks to store match data
 
 //? store match data block
 const int NUM = 4;
@@ -58,11 +58,6 @@ void itostr(int num, char str[5]) {
 }
 
 void WriteBlockData(char str1[5], char str2[5], Buffer *buf) {
-    // char str1[5];
-    // char str2[5];
-    // itostr(x, str1);
-    // itostr(y, str2);
-
     //whether write into disk
     if(wblk > buf->data+buf->bufSize) {
         //write into disk
@@ -78,7 +73,6 @@ void WriteBlockData(char str1[5], char str2[5], Buffer *buf) {
     // printf("local=%ld\n", (wblk-wblkbase)%65);
 
     if((wblk-wblkbase)%65 == 0) {
-        printf("***\n");
         //valid bit, jump
         wblk++;
     }
