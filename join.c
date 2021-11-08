@@ -113,9 +113,22 @@ int main() {
             // count++;
             //! RA = SC, write and move ptr1
             unsigned char *Rptr = blkPtr1;
+            int Raddr = mergeblock1;
             while(strcmp(strRA, strSC) == 0) {
                 count++;
                 // printf("%d: (%s, %s), (%s, %s)\n", ++countnum, strSC, strSD, strRA, strRB);
+                if((blkPtr1-buf->data)%65==57) {
+                    // printf("way-1 change!\n");
+                    freeBlockInBuffer(GetBlockdataAddress(0, buf), buf);
+                    if(mergeblock1 == 316) {
+                        // printf("way-1 over!\n");               
+                        blkPtr1 = NULL;
+                        mergeblock1 = 317;
+                    } else {
+                        blkPtr1 = readBlockFromDisk(++mergeblock1, buf);
+                    }
+                }
+
                 for(int k=0; k<4; k++) {
                     *(wblk + k) = *(blkPtr2 + k);
                     *(wblk + k + 4) = *(blkPtr2 + k + 4);
@@ -170,6 +183,7 @@ int main() {
                 ReadBlockData(blkPtr2, strSC, strSD);
             }
             blkPtr1 = Rptr;
+            mergeblock1 = Raddr;
             blkPtr2 += 8;
         }
     }
