@@ -184,6 +184,8 @@ int main() {
             }
             blkPtr1 = Rptr;
             mergeblock1 = Raddr;
+            freeBlockInBuffer(GetBlockdataAddress(0, buf), buf);
+            readBlockFromDisk(Raddr, buf);
             blkPtr2 += 8;
         }
     }
