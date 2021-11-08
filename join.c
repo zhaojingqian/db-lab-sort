@@ -71,7 +71,7 @@ int main() {
 
     unsigned char *blkPtr1 = readBlockFromDisk(++mergeblock1, buf);
     unsigned char *blkPtr2 = readBlockFromDisk(++mergeblock2, buf);
-
+    // int countnum = 0;
     while(blkPtr1 && blkPtr2) {
         if((blkPtr1-buf->data)%65==57) {
             // printf("way-1 change!\n");
@@ -101,6 +101,8 @@ int main() {
         ReadBlockData(blkPtr1, strRA, strRB);
         ReadBlockData(blkPtr2, strSC, strSD);
 
+        // printf("RA=%s, SC=%s\n", strRA, strSC);
+        
         if(strcmp(strRA, strSC) < 0) {
             //! RA < SC, move ptr1
             blkPtr1 += 8;
@@ -108,60 +110,67 @@ int main() {
             //! RA > SC, move ptr2
             blkPtr2 += 8;
         } else if(strcmp(strRA, strSC) == 0) {
-            count++;
+            // count++;
             //! RA = SC, write and move ptr1
-
-            for(int k=0; k<4; k++) {
-                *(wblk + k) = *(blkPtr2 + k);
-                *(wblk + k + 4) = *(blkPtr2 + k + 4);
-            }
-            wblk += 8;
-            if((wblk-wblkbase)%65 == 57) {
-                char strnextdisk[5];
-                itostr(++fnextdisknum, strnextdisk);
-                // printf("nextdisk=%ld\n", numblk+(wblk-wblkbase)/65+1);
-                for(int k=0; k<4; k++) 
-                    *(wblk + k) = strnextdisk[k];
-                wblk += 8;
-                wblk++;
-            }
-            if(wblk > buf->data+buf->bufSize) {
-                //! write into disk
-                // printf("write into disk!\n");
-                for(int i=2; i<8; i++) {
-                    unsigned char *cblk = GetBlockdataAddress(i, buf);
-                    writeBlockToDisk(cblk, ++fnumblk, buf);
-                    memset(cblk, '\0', sizeof(char)*buf->blkSize);
+            unsigned char *Rptr = blkPtr1;
+            while(strcmp(strRA, strSC) == 0) {
+                count++;
+                // printf("%d: (%s, %s), (%s, %s)\n", ++countnum, strSC, strSD, strRA, strRB);
+                for(int k=0; k<4; k++) {
+                    *(wblk + k) = *(blkPtr2 + k);
+                    *(wblk + k + 4) = *(blkPtr2 + k + 4);
                 }
-                wblk = GetBlockdataAddress(2, buf);
-            }
-
-            for(int k=0; k<4; k++) {
-                *(wblk + k) = *(blkPtr1 + k);
-                *(wblk + k + 4) = *(blkPtr1 + k + 4);
-            }  
-            wblk += 8;
-            if((wblk-wblkbase)%65 == 57) {
-                char strnextdisk[5];
-                itostr(++fnextdisknum, strnextdisk);
-                // printf("nextdisk=%ld\n", numblk+(wblk-wblkbase)/65+1);
-                for(int k=0; k<4; k++) 
-                    *(wblk + k) = strnextdisk[k];
                 wblk += 8;
-                wblk++;
-            }   
-            if(wblk > buf->data+buf->bufSize) {
-                //! write into disk
-                // printf("write into disk!\n");
-                for(int i=2; i<8; i++) {
-                    unsigned char *cblk = GetBlockdataAddress(i, buf);
-                    writeBlockToDisk(cblk, ++fnumblk, buf);
-                    memset(cblk, '\0', sizeof(char)*buf->blkSize);
+                if((wblk-wblkbase)%65 == 57) {
+                    char strnextdisk[5];
+                    itostr(++fnextdisknum, strnextdisk);
+                    // printf("nextdisk=%ld\n", numblk+(wblk-wblkbase)/65+1);
+                    for(int k=0; k<4; k++) 
+                        *(wblk + k) = strnextdisk[k];
+                    wblk += 8;
+                    wblk++;
                 }
-                wblk = GetBlockdataAddress(2, buf);
-            }
+                if(wblk > buf->data+buf->bufSize) {
+                    //! write into disk
+                    // printf("write into disk!\n");
+                    for(int i=2; i<8; i++) {
+                        unsigned char *cblk = GetBlockdataAddress(i, buf);
+                        writeBlockToDisk(cblk, ++fnumblk, buf);
+                        memset(cblk, '\0', sizeof(char)*buf->blkSize);
+                    }
+                    wblk = GetBlockdataAddress(2, buf);
+                }
 
-            blkPtr1 += 8; 
+                for(int k=0; k<4; k++) {
+                    *(wblk + k) = *(blkPtr1 + k);
+                    *(wblk + k + 4) = *(blkPtr1 + k + 4);
+                }  
+                wblk += 8;
+                if((wblk-wblkbase)%65 == 57) {
+                    char strnextdisk[5];
+                    itostr(++fnextdisknum, strnextdisk);
+                    // printf("nextdisk=%ld\n", numblk+(wblk-wblkbase)/65+1);
+                    for(int k=0; k<4; k++) 
+                        *(wblk + k) = strnextdisk[k];
+                    wblk += 8;
+                    wblk++;
+                }   
+                if(wblk > buf->data+buf->bufSize) {
+                    //! write into disk
+                    // printf("write into disk!\n");
+                    for(int i=2; i<8; i++) {
+                        unsigned char *cblk = GetBlockdataAddress(i, buf);
+                        writeBlockToDisk(cblk, ++fnumblk, buf);
+                        memset(cblk, '\0', sizeof(char)*buf->blkSize);
+                    }
+                    wblk = GetBlockdataAddress(2, buf);
+                }
+                blkPtr1 += 8; 
+                ReadBlockData(blkPtr1, strRA, strRB);
+                ReadBlockData(blkPtr2, strSC, strSD);
+            }
+            blkPtr1 = Rptr;
+            blkPtr2 += 8;
         }
     }
     for(int i=2; i<8; i++) {
