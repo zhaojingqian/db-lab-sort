@@ -69,7 +69,7 @@ int main() {
     
     //build an index table(100, 110, 120, 130)
 
-    for(int i=0; i<89; i++) {
+    for(int i=0; i<100; i++) {
         int addr = i + 400 + 1;
         printf("addr=%d\n", addr);
         unsigned char *blkPtr = ReadBlockFromDisk(addr, buf);

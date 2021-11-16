@@ -112,22 +112,14 @@ int main() {
         } else if(strcmp(strRA, strSC) == 0) {
             // count++;
             //! RA = SC, write and move ptr1
+
             unsigned char *Rptr = blkPtr1;
             int Raddr = mergeblock1;
+
             while(strcmp(strRA, strSC) == 0) {
                 count++;
+                // printf("blkPtr1 is %d, in addr%d\tblkPtr2 is %d, in addr%d\n",(blkPtr1-buf->data)%65, mergeblock1, (blkPtr2-buf->data)%65, mergeblock2);
                 // printf("%d: (%s, %s), (%s, %s)\n", ++countnum, strSC, strSD, strRA, strRB);
-                if((blkPtr1-buf->data)%65==57) {
-                    // printf("way-1 change!\n");
-                    freeBlockInBuffer(GetBlockdataAddress(0, buf), buf);
-                    if(mergeblock1 == 316) {
-                        // printf("way-1 over!\n");               
-                        blkPtr1 = NULL;
-                        mergeblock1 = 317;
-                    } else {
-                        blkPtr1 = readBlockFromDisk(++mergeblock1, buf);
-                    }
-                }
 
                 for(int k=0; k<4; k++) {
                     *(wblk + k) = *(blkPtr2 + k);
@@ -178,7 +170,21 @@ int main() {
                     }
                     wblk = GetBlockdataAddress(2, buf);
                 }
+
                 blkPtr1 += 8; 
+                if((blkPtr1-buf->data)%65==57) {
+                    // printf("way-1 change!\n");
+                    // printf("---change!\n");
+                    freeBlockInBuffer(GetBlockdataAddress(0, buf), buf);
+                    if(mergeblock1 == 316) {
+                        // printf("way-1 over!\n");               
+                        blkPtr1 = NULL;
+                        mergeblock1 = 317;
+                    } else {
+                        blkPtr1 = readBlockFromDisk(++mergeblock1, buf);
+                    }
+                }
+                if(blkPtr1 == NULL) break;
                 ReadBlockData(blkPtr1, strRA, strRB);
                 ReadBlockData(blkPtr2, strSC, strSD);
             }
