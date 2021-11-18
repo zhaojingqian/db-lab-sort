@@ -151,12 +151,40 @@ int main() {
             if(indexNum == 4) break;
         }
     }
-    // //* test
+    unsigned char *indexblk = GetBlockdataAddress(0, buf);
+    memset(indexblk, '\0', sizeof(char)*buf->blkSize);
+    unsigned char *blk = indexblk;
+    for(int i=0; i<4; i++) {
+        char index[5], block[5];
+        itostr(t[i].data, index);
+        itostr(t[i].indexBlock, block);
+        for(int k=0; k<4; k++) {
+            *(blk + k) = index[k];
+            *(blk + k + 4) = block[k];
+        }
+        blk += 8;
+    }
+    writeBlockToDisk(indexblk, 100, buf);
+
+
+    int begin_io = buf->numIO;
+    indexblk = readBlockFromDisk(100, buf);
+    blk = indexblk;
+    for(int i=0; i<4; i++) {
+        char index[5], block[5];
+        for(int k=0; k<4; k++) {
+            index[k] = *(blk + k);
+            block[k] = *(blk + k + 4);
+        }
+        t[i].data = atoi(index);
+        t[i].indexBlock = atoi(block);
+        blk += 8;
+    }
+    freeBlockInBuffer(indexblk, buf);
+
     // for(int i=0; i<4; i++) {
     //     printf("t[%d].indexBlock=%d\n", i, t[i].indexBlock);
     // }
-
-    int begin_io = buf->numIO;
 
     // find data 130's indexaddr
     int indexaddr = 0;
